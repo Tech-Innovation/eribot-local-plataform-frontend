@@ -41,6 +41,9 @@ jobs:
           draft: false
           prerelease: false
 
+      - name: Check upload_url
+        run: echo ${{ steps.create_release.outputs.upload_url }}
+
       - name: Upload assets
         uses: actions/upload-release-asset@v1
         env:
