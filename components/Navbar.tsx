@@ -17,7 +17,6 @@ import {
   Drawer,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { signOut } from "next-auth/react";
 import { MENU_LIST } from "@utils/constants";
 
 const drawerWidth = 240;
