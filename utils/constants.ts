@@ -13,8 +13,6 @@ const MENU_LIST = [
   { text: "Configuración", href: "/settings" },
 ];
 
-const rackInitialPlaceRegex = /^[A-Z]{2}-\d{2}-\d{3}-\d{2}$/;
-
 export {
   noNavbarPaths,
   protectedPaths,
@@ -23,5 +21,4 @@ export {
   footerHeight,
   fixerHeight,
   MENU_LIST,
-  rackInitialPlaceRegex,
 };

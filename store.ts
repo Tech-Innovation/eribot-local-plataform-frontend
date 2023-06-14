@@ -4,6 +4,7 @@ import readingProcess from "@/features/reading/readingProcessSlice";
 import readingsSlice from "./features/reading/readingsSlice";
 import readingNotification from "./features/reading/readingNotificationSlice";
 import connectionSlice from "./features/connection/connectionSlice";
+import readingsListSlice from "./features/reading/readingsListSlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     readings: readingsSlice,
     readingNotification: readingNotification,
     connection: connectionSlice,
+    readingsList: readingsListSlice,
   },
 });
 

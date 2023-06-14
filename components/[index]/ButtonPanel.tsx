@@ -4,45 +4,32 @@ import { useAppDispatch, useAppSelector } from "../../hooks";
 import { readingProcess } from "@/features/reading/readingProcessSlice";
 import { readingNotification } from "@/features/reading/readingNotificationSlice";
 import axios from "axios";
-import { rackInitialPlaceRegex } from "@/utils/constants";
 import {
   BarcodeSource,
   BarcodeStatus,
   LoadUnitBarcodeOrigin,
 } from "@/features/reading/currentReadingSlice";
 
-import { initializeApp } from "firebase/app";
-import { getFirestore, collection, addDoc, query, where, getDocs } from "firebase/firestore";
-const firebaseConfig = {
-  apiKey: "AIzaSyDBLkM_3EkF9JQdgxEBea_qdSii7GypW4U",
-  authDomain: "eribot-sub-plataform.firebaseapp.com",
-  projectId: "eribot-sub-plataform",
-  storageBucket: "eribot-sub-plataform.appspot.com",
-  messagingSenderId: "523472517712",
-  appId: "1:523472517712:web:20436c9353b0b6258d2f55",
-};
-
 interface IButtonPanelProps {
   [key: string]: any;
 }
 
 async function startProcess() {
-  await axios.post("http://192.168.18.44:1880/prueba", {
+  // await axios.post("http://192.168.18.44:1880/prueba", {
+  await axios.post("http://127.0.0.1:1880/prueba", {
     multi: true,
   });
 }
 
 async function endProcess() {
-  await axios.post("http://192.168.18.44:1880/prueba", {
+  // await axios.post("http://192.168.18.44:1880/prueba", {
+  await axios.post("http://127.0.0.1:1880/prueba", {
     multi: false,
   });
 }
 
 export const ButtonPanel = (props: IButtonPanelProps) => {
   const dispatch = useAppDispatch();
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
 
   const readingProcessIsRunning = useAppSelector((state) => state.readingProcess.isRunning);
   const readingProcessIsPaused = useAppSelector((state) => state.readingProcess.isPaused);
@@ -78,13 +65,6 @@ export const ButtonPanel = (props: IButtonPanelProps) => {
           return;
         }
 
-        if (!rackInitialPlace.match(rackInitialPlaceRegex)) {
-          dispatch(readingNotification.actions.setSeverity("error"));
-          dispatch(readingNotification.actions.setMessage("Ubicacion inicial no válida"));
-          dispatch(readingNotification.actions.open());
-          return;
-        }
-
         if (parseInt(rackBays) < 1) {
           dispatch(readingNotification.actions.setSeverity("error"));
           dispatch(readingNotification.actions.setMessage("Columnas no válidas"));
@@ -99,12 +79,23 @@ export const ButtonPanel = (props: IButtonPanelProps) => {
           return;
         }
 
-        var rackInitialPlaceArray = rackInitialPlace.split("-");
+        if (rackInitialPlace.includes("-")) {
+          var rackInitialPlaceArray = rackInitialPlace.split("-");
+          var grupo = rackInitialPlaceArray[0];
+          var pasillo = rackInitialPlaceArray[1];
+          var bay_ = rackInitialPlaceArray[2];
+          var level_ = rackInitialPlaceArray[3];
+        } else {
+          let lengthOfString = rackInitialPlace.length;
+          let startOfLevel = lengthOfString - 3;
+          let startOfBay = lengthOfString - 6;
+          let startOfAisle = lengthOfString - 9;
+          var grupo = rackInitialPlace.slice(0, startOfAisle);
+          var pasillo = rackInitialPlace.slice(startOfAisle, startOfBay);
+          var bay_ = rackInitialPlace.slice(startOfBay, startOfLevel);
+          var level_ = rackInitialPlace.slice(startOfLevel);
+        }
 
-        var grupo = rackInitialPlaceArray[0];
-        var pasillo = rackInitialPlaceArray[1];
-        var bay_ = rackInitialPlaceArray[2];
-        var level_ = rackInitialPlaceArray[3];
         var bayStep = 2;
 
         var bay = parseInt(bay_);
@@ -242,9 +233,8 @@ export const ButtonPanel = (props: IButtonPanelProps) => {
         let currentReading = readings[currentPosition];
         console.log(currentReading);
         try {
-          // addDoc(collection(db, "lecturas"), currentReading);
           axios
-            .post("http://localhost:5000/api/readings/", currentReading)
+            .post("http://localhost:5001/api/readings/", currentReading)
             .then((response) => {
               console.log(response);
             })
