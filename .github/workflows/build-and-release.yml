@@ -29,7 +29,7 @@ jobs:
           mkdir eribot-local-plataform-frontend-release 
           cp -r .next eribot-local-plataform-frontend-release/.next
           cp package.json eribot-local-plataform-frontend-release/package.json
-          zip -r release.zip eribot-local-plataform-frontend-release
+          zip -r eribot-local-plataform-frontend-release.zip eribot-local-plataform-frontend-release
 
       - name: Set tag name
         id: vars
@@ -53,6 +53,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: release.zip
-          asset_name: release.zip
+          asset_path: eribot-local-plataform-frontend-release.zip
+          asset_name: eribot-local-plataform-frontend-release.zip
           asset_content_type: application/zip
